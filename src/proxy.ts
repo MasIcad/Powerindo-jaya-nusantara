@@ -1,7 +1,6 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-// ✅ Nama fungsi diubah menjadi 'proxy' untuk Next.js 16
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({
     request: {
@@ -18,20 +17,17 @@ export async function proxy(request: NextRequest) {
           return request.cookies.get(name)?.value
         },
         set(name: string, value: string, options: CookieOptions) {
+          // Wajib diset agar Vercel bisa mengenali session
           request.cookies.set({ name, value, ...options })
           response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
+            request: { headers: request.headers },
           })
           response.cookies.set({ name, value, ...options })
         },
         remove(name: string, options: CookieOptions) {
           request.cookies.set({ name, value: '', ...options })
           response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
+            request: { headers: request.headers },
           })
           response.cookies.set({ name, value: '', ...options })
         },
@@ -39,11 +35,15 @@ export async function proxy(request: NextRequest) {
     }
   )
 
-  // Mengambil data user untuk pengecekan status login
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Proteksi: Jika belum login dan mencoba masuk ke halaman dashboard atau tulis artikel
-  if (!user && (request.nextUrl.pathname.startsWith('/dashboard') || request.nextUrl.pathname.startsWith('/write'))) {
+  // Jika sudah login dan di halaman login, lempar ke dashboard
+  if (user && request.nextUrl.pathname === '/login') {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+
+  // Proteksi Dashboard
+  if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
@@ -51,10 +51,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match semua request kecuali file statis dan metadata
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
-  ],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 }
