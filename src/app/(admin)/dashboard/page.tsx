@@ -175,7 +175,7 @@ export default function DashboardPage() {
                 <textarea placeholder="Deskripsi..." required className="w-full p-4 bg-slate-50 rounded-2xl outline-none h-32" value={prodForm.desc} onChange={e => setProdForm({...prodForm, desc: e.target.value})} />
                 <input type="file" id="prodFile" hidden onChange={e => setProdForm({...prodForm, file: e.target.files?.[0] || null})} />
                 <label htmlFor="prodFile" className="block p-4 border-2 border-dashed border-slate-200 rounded-2xl text-center cursor-pointer text-slate-400 font-bold">{prodForm.file ? prodForm.file.name : "+ Upload Gambar"}</label>
-                <button disabled={loading} className="w-full py-4 bg-brand-primary text-white font-bold rounded-2xl">{loading ? <Loader2 className="animate-spin" /> : <Plus />} Publish Produk</button>
+                <button disabled={loading} className="w-full py-4 bg-brand-primary text-white font-bold rounded-2xl shadow-lg flex justify-center items-center gap-2">{loading ? <Loader2 className="animate-spin" /> : <Plus />} Publish Produk</button>
               </form>
             </div>
           </div>
