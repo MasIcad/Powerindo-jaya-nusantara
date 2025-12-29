@@ -16,7 +16,7 @@ export default async function HomePage() {
     .limit(10);
 
   return (
-    <main className="bg-white relative"> {/* Tambahkan relative di sini */}
+    <main className="bg-white relative">
       <HeroSlider />
 
       {/* Section About Overview */}
@@ -48,7 +48,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Section Expertise */}
+      {/* Section Expertise - UPDATE: Deskripsi spesifik untuk tiap layanan */}
       <section className="bg-slate-50 py-32 px-6 overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <Reveal>
@@ -67,9 +67,21 @@ export default async function HomePage() {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { title: 'Mechanical Electrical Contractor', icon: '01' },
-              { title: 'Supplier', icon: '02' },
-              { title: 'Distributor', icon: '03' }
+              { 
+                title: 'Mechanical Electrical Contractor', 
+                icon: '01',
+                desc: 'Layanan instalasi, pemeliharaan, dan integrasi sistem mekanikal elektrikal skala industri yang presisi, aman, dan memenuhi standar internasional.'
+              },
+              { 
+                title: 'Supplier', 
+                icon: '02',
+                desc: 'Penyedia komponen elektrikal dan infrastruktur digital berkualitas tinggi dari brand ternama untuk menjamin keandalan operasional bisnis Anda.'
+              },
+              { 
+                title: 'Distributor', 
+                icon: '03',
+                desc: 'Distributor resmi perangkat teknologi dan sistem otomasi terintegrasi yang memastikan rantai pasok dan distribusi proyek Anda berjalan tanpa hambatan.'
+              }
             ].map((item, i) => (
               <Reveal key={i}>
                 <div className="group relative bg-white p-12 rounded-4xl border border-slate-200 transition-all duration-500 hover:-translate-y-4">
@@ -82,7 +94,7 @@ export default async function HomePage() {
                       {item.title}
                     </h4>
                     <p className="text-slate-500 group-hover:text-slate-400 transition-colors leading-relaxed">
-                      Kami menyediakan fondasi teknologi yang aman dan terukur untuk mendukung operasional bisnis Anda 24/7.
+                      {item.desc}
                     </p>
                   </div>
                 </div>
@@ -130,9 +142,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* --- FLOATING WHATSAPP BUTTON (TAMBAHAN BARU) --- */}
+      {/* Floating WhatsApp Button */}
       <div className="fixed bottom-8 right-8 z-100 flex flex-col items-end group">
-        {/* Menu Pilihan WhatsApp yang muncul saat di-hover */}
         <div className="flex flex-col gap-3 mb-4 opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300">
           <a 
             href="https://wa.me/6281252505111" 
@@ -156,7 +167,6 @@ export default async function HomePage() {
           </a>
         </div>
 
-        {/* Tombol Utama (Icon WhatsApp) */}
         <button className="bg-green-500 text-white p-5 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300">
           <MessageCircle size={32} fill="currentColor" />
         </button>
