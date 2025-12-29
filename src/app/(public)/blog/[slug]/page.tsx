@@ -51,7 +51,7 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
               </div>
               <div className="flex items-center gap-2">
                 <User size={18} />
-                Admin Visitec
+                Admin Powerindo Jaya Nusantara
               </div>
             </div>
           </div>

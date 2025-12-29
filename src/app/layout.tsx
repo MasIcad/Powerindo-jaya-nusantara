@@ -14,7 +14,7 @@ const jakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "Powerindo Jaya Nusantara - Produk Lengap, Harga Terbaik",
   description: "Kami perusahaan mechanical Electrical, yang memproduksi, merakit, distributor dan jasa engineering peralatan listrik",
-  keywords: ["Powerindojayanusantara", "Teknologi", "Mechanical", "Electrical", "Contractor", "Supplier", "Distributor" ],
+  keywords: ["Powerindojayanusantara", "Teknologi", "Mechanical Electrical Contractor", "Supplier", "Distributor" ],
   authors: [{ name: "Powerindo Jaya Nusantara Team" }],
   openGraph: {
     title: "Powerino Jaya Nusantara",
