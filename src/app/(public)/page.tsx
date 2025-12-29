@@ -68,7 +68,7 @@ export default async function HomePage() {
             {[
               { title: 'Mechanical Electrical Contractor', icon: '01' },
               { title: 'Supplier', icon: '02' },
-              { title: 'Ditributor', icon: '03' }
+              { title: 'Distributor', icon: '03' }
             ].map((item, i) => (
               <Reveal key={i}>
                 <div className="group relative bg-white p-12 rounded-4xl border border-slate-200 transition-all duration-500 hover:-translate-y-4">

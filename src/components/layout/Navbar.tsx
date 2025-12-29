@@ -6,7 +6,7 @@ export default function Navbar() {
         <a href="/" className="flex items-center gap-3 group">
           {/* Gambar Logo */}
           <img 
-            src="/Asset/Logo.jpeg" 
+            src="/public/Logo.jpeg" 
             alt="Logo Powerindo Jaya Nusantara" 
             className="h-10 w-auto object-contain" // Mengatur tinggi agar proporsional di navbar
           />
