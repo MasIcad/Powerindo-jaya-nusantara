@@ -23,7 +23,6 @@ export default function DashboardPage() {
   useEffect(() => { fetchData(); }, []);
 
   async function fetchData() {
-    // Mengambil data dari tabel yang sudah dibuat di SQL Editor
     const { data: postsData } = await supabase.from('posts').select('*').order('created_at', { ascending: false });
     const { data: prodData } = await supabase.from('products').select('*').order('created_at', { ascending: false });
     const { data: gallData } = await supabase.from('gallery').select('*').order('created_at', { ascending: false });
@@ -37,7 +36,7 @@ export default function DashboardPage() {
   const uploadToStorage = async (file: File, folder: string) => {
     const fileName = `${Date.now()}-${file.name}`;
     const filePath = `${folder}/${fileName}`;
-    const { error } = await supabase.storage.from('visitec-assets').upload(filePath, file); // Menggunakan bucket visitec-assets
+    const { error } = await supabase.storage.from('visitec-assets').upload(filePath, file);
     if (error) throw error;
     return supabase.storage.from('visitec-assets').getPublicUrl(filePath).data.publicUrl;
   };
@@ -57,7 +56,7 @@ export default function DashboardPage() {
       
       await supabase.from('posts').insert([{ 
         title: postForm.title, 
-        content: { body: postForm.content, gallery: imageUrls }, // Simpan array ke JSONB
+        content: { body: postForm.content, gallery: imageUrls },
         image_url: imageUrls[0] || '',
         slug: postForm.title.toLowerCase().replace(/ /g, '-')
       }]);
@@ -87,7 +86,7 @@ export default function DashboardPage() {
     finally { setLoading(false); }
   };
 
-  // --- HANDLER: TAMBAH GALLERY (FITUR BARU) ---
+  // --- HANDLER: TAMBAH GALLERY ---
   const handleAddGallery = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!gallForm.file) return alert('Pilih foto gallery!');
@@ -155,9 +154,21 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="lg:col-span-1 space-y-4">
-            <h3 className="font-bold text-brand-dark">ARTIKEL TERBARU</h3>
+            <h3 className="font-bold text-brand-dark uppercase tracking-wider text-sm">Artikel Terbaru</h3>
             {posts.map(post => (
-              <div key={post.id} className="p-4 bg-white rounded-2xl border flex items-center gap-4"><img src={post.image_url} className="w-12 h-12 rounded-xl object-cover" /><p className="font-bold text-xs truncate">{post.title}</p></div>
+              <div key={post.id} className="p-4 bg-white rounded-2xl border flex items-center justify-between gap-4 group hover:border-brand-primary transition-all shadow-sm">
+                <div className="flex items-center gap-4 overflow-hidden">
+                  <img src={post.image_url} className="w-12 h-12 rounded-xl object-cover shrink-0" />
+                  <p className="font-bold text-xs truncate">{post.title}</p>
+                </div>
+                {/* Tombol Delete Insight */}
+                <button 
+                  onClick={async () => { if(confirm('Hapus artikel ini?')) { await supabase.from('posts').delete().eq('id', post.id); fetchData(); } }}
+                  className="p-2 text-red-400 hover:bg-red-50 rounded-xl transition-colors shrink-0"
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
             ))}
           </div>
         </div>
@@ -190,7 +201,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* 3. TAB GALLERY: ADD GALLERY (TERPASANG KEMBALI) */}
+      {/* 3. TAB GALLERY */}
       {activeTab === 'gallery' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="lg:col-span-1">
@@ -212,8 +223,15 @@ export default function DashboardPage() {
             {gallery.map(item => (
               <div key={item.id} className="aspect-square rounded-3xl overflow-hidden border relative group shadow-sm">
                 <img src={item.image_url} className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center p-4">
+                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center p-4 gap-4">
                   <p className="text-white text-xs font-bold text-center">{item.title}</p>
+                  {/* Tombol Delete Gallery */}
+                  <button 
+                    onClick={async () => { if(confirm('Hapus foto ini dari gallery?')) { await supabase.from('gallery').delete().eq('id', item.id); fetchData(); } }}
+                    className="p-3 bg-red-500 text-white rounded-2xl hover:bg-red-600 transition-colors shadow-xl"
+                  >
+                    <Trash2 size={20} />
+                  </button>
                 </div>
               </div>
             ))}
