@@ -107,7 +107,7 @@ export default function DashboardPage() {
       {/* HEADER NAVIGASI TABS */}
       <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
         <div>
-          <h1 className="text-4xl font-black text-brand-dark italic uppercase tracking-tighter">Visitec Control Center</h1>
+          <h1 className="text-4xl font-black text-brand-dark italic uppercase tracking-tighter">Powerindo Jaya Nusantara Control Center</h1>
           <p className="text-slate-500 mt-2">Kelola konten, produk, dan performa digital perusahaan.</p>
         </div>
         <div className="flex gap-4 bg-white p-2 rounded-2xl shadow-sm border border-slate-100">

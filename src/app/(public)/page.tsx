@@ -26,7 +26,7 @@ export default async function HomePage() {
               <div className="relative">
                 <div className="absolute -top-10 -left-10 w-40 h-40 bg-brand-primary/10 rounded-full blur-3xl" />
                 <h2 className="text-sm font-bold text-brand-primary uppercase tracking-[0.4em] mb-8">
-                  About Visitec
+                  About Powerindo Jaya Nusantara
                 </h2>
                 <p className="text-4xl md:text-6xl font-light text-brand-dark leading-[1.1]">
                   Leading the way in <span className="font-bold">Digital Transformation</span> and Infrastructure.
@@ -34,7 +34,7 @@ export default async function HomePage() {
               </div>
               <div className="space-y-6">
                 <p className="text-xl text-slate-600 leading-relaxed">
-                  Kami bukan sekadar penyedia layanan teknologi. Visitec adalah mitra strategis yang membantu perusahaan besar mengintegrasikan solusi digital paling mutakhir.
+                  Kami bukan sekadar penyedia layanan teknologi. Powerindo Jaya Nusantara adalah mitra strategis yang membantu perusahaan besar mengintegrasikan solusi digital paling mutakhir.
                 </p>
                 <div className="pt-6">
                   <button className="text-brand-dark font-bold border-b-2 border-brand-primary pb-2 hover:text-brand-primary transition-all">
@@ -111,7 +111,7 @@ export default async function HomePage() {
                     <img 
                       src={item.image_url} 
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-                      alt={item.title || "Visitec Project"} 
+                      alt={item.title || "Powerindo Jaya Nusantara Project"} 
                     />
                     <div className="absolute inset-0 bg-brand-dark/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-6 text-center">
                        <p className="font-bold text-lg uppercase tracking-widest">{item.title}</p>

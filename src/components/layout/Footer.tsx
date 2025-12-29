@@ -46,7 +46,7 @@ export default function Footer() {
               </li>
               <li className="flex gap-4">
                 <Mail className="text-brand-primary shrink-0" />
-                <span>contact@visitec.co.id</span>
+                <span>contact@powerindojayanusantara.co.id</span>
               </li>
             </ul>
           </div>

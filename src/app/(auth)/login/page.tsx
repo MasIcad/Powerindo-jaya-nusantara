@@ -35,7 +35,7 @@ export default function LoginPage() {
       <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-10 border border-slate-100">
         <div className="text-center mb-10">
           <h1 className="text-3xl font-bold text-brand-dark mb-2">Admin Login</h1>
-          <p className="text-slate-500">Silakan masuk untuk mengelola konten Visitec</p>
+          <p className="text-slate-500">Silakan masuk untuk mengelola konten Powerindo Jaya Nusantara</p>
         </div>
 
         {error && (
@@ -53,7 +53,7 @@ export default function LoginPage() {
                 type="email" 
                 required
                 className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-primary outline-none transition-all"
-                placeholder="name@visitec.com"
+                placeholder="name@powerindojayanusantara.com"
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>

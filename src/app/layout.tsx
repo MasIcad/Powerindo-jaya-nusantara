@@ -12,15 +12,15 @@ const jakarta = Plus_Jakarta_Sans({
 
 // TAMBAHKAN KODE METADATA INI
 export const metadata: Metadata = {
-  title: "Visitec Corporate - Inovasi IoT & Solusi Teknologi",
-  description: "Penyedia layanan IoT dan wawasan teknologi terdepan untuk masa depan digital Anda.",
-  keywords: ["IoT Indonesia", "Visitec", "Corporate Blog", "Teknologi"],
-  authors: [{ name: "Visitec Team" }],
+  title: "Powerindo Jaya Nusantara - Produk Lengap, Harga Terbaik",
+  description: "Kami perusahaan mechanical Electrical, yang memproduksi, merakit, distributor dan jasa engineering peralatan listrik",
+  keywords: ["Powerindojayanusantara", "Teknologi", "Mechanical", "Electrical", "Contractor", "Supplier", "Distributor" ],
+  authors: [{ name: "Powerindo Jaya Nusantara Team" }],
   openGraph: {
-    title: "Visitec Corporate",
-    description: "Solusi IoT dan Blog Teknologi Terkini",
+    title: "Powerino Jaya Nusantara",
+    description: "Kami perusahaan mechanical Electrical, yang memproduksi, merakit, distributor dan jasa engineering peralatan listrik",
     url: "https://visitec.vercel.app", // Ganti dengan domain asli jika sudah ada
-    siteName: "Visitec",
+    siteName: "Powerindo Jaya Nusantara",
     type: "website",
   },
 };
