@@ -13,10 +13,9 @@ interface Product {
   description: string;
   price: number;
   image_url: string;
-  category: string; // Tambahkan category di interface
+  category: string;
 }
 
-// Menambahkan searchParams untuk menangkap kategori dari URL
 export default async function ProductsPage({
   searchParams,
 }: {
@@ -48,11 +47,15 @@ export default async function ProductsPage({
             <p className="text-slate-500">Menyediakan infrastruktur elektrikal dan digital terbaik untuk kebutuhan industri Anda.</p>
         </div>
 
-        {/* --- FILTER KATEGORI --- */}
-        <div className="flex flex-wrap gap-3 mb-12">
+        {/* --- FILTER KATEGORI DENGAN HIGHLIGHT BIRU --- */}
+        <div className="flex flex-wrap gap-3 mb-16">
           <Link 
             href="/products"
-            className={`px-6 py-2 rounded-full border text-sm font-bold transition-all ${!selectedCategory ? 'bg-brand-primary text-white border-brand-primary' : 'bg-white text-slate-500 border-slate-200 hover:border-brand-primary'}`}
+            className={`px-8 py-3 rounded-full border-2 text-xs font-bold tracking-widest transition-all duration-300 shadow-sm ${
+              !selectedCategory 
+              ? 'bg-brand-primary text-white border-brand-primary shadow-blue-200 shadow-lg' 
+              : 'bg-white text-slate-400 border-slate-100 hover:border-brand-primary hover:text-brand-primary'
+            }`}
           >
             SEMUA PRODUK
           </Link>
@@ -61,7 +64,11 @@ export default async function ProductsPage({
             <Link 
               key={cat}
               href={`/products?category=${cat}`}
-              className={`px-6 py-2 rounded-full border text-sm font-bold transition-all ${selectedCategory === cat ? 'bg-brand-primary text-white border-brand-primary' : 'bg-white text-slate-500 border-slate-200 hover:border-brand-primary'}`}
+              className={`px-8 py-3 rounded-full border-2 text-xs font-bold tracking-widest transition-all duration-300 shadow-sm ${
+                selectedCategory === cat 
+                ? 'bg-brand-primary text-white border-brand-primary shadow-blue-200 shadow-lg' 
+                : 'bg-white text-slate-400 border-slate-100 hover:border-brand-primary hover:text-brand-primary'
+              }`}
             >
               {cat.toUpperCase()}
             </Link>
@@ -76,20 +83,22 @@ export default async function ProductsPage({
                 <div className="group border border-slate-100 rounded-4xl overflow-hidden shadow-sm hover:shadow-2xl transition-all bg-white">
                   <div className="h-72 overflow-hidden relative">
                     {/* Badge Kategori di atas foto */}
-                    <div className="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur px-3 py-1 rounded-full flex items-center gap-2 shadow-sm">
+                    <div className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur px-4 py-1.5 rounded-full flex items-center gap-2 shadow-sm border border-slate-100">
                         <Tag size={12} className="text-brand-primary" />
-                        <span className="text-[10px] font-bold text-brand-dark uppercase tracking-wider">{item.category || 'Uncategorized'}</span>
+                        <span className="text-[10px] font-black text-brand-dark uppercase tracking-wider">{item.category || 'General'}</span>
                     </div>
-                    <img src={item.image_url} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                    <img src={item.image_url} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                   </div>
                   <div className="p-8">
                     <h3 className="text-2xl font-bold mb-2 text-brand-dark">{item.name}</h3>
-                    <p className="text-slate-500 mb-6 line-clamp-2 text-sm">{item.description}</p>
-                    <div className="flex justify-between items-center">
+                    <p className="text-slate-500 mb-6 line-clamp-2 text-sm leading-relaxed">{item.description}</p>
+                    <div className="flex justify-between items-center pt-4 border-t border-slate-50">
                       <span className="text-xl font-black text-brand-primary">
                         Rp {item.price?.toLocaleString('id-ID')}
                       </span>
-                      <button className="text-sm font-bold border-b-2 border-brand-dark hover:text-brand-primary hover:border-brand-primary transition-colors">DETAILS</button>
+                      <button className="text-xs font-bold tracking-widest border-b-2 border-brand-dark hover:text-brand-primary hover:border-brand-primary transition-all">
+                        DETAILS
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -97,8 +106,8 @@ export default async function ProductsPage({
             ))}
           </div>
         ) : (
-          <div className="py-20 text-center bg-slate-50 rounded-4xl border-2 border-dashed border-slate-200">
-            <p className="text-slate-400 italic">Belum ada produk untuk kategori "{selectedCategory}"</p>
+          <div className="py-32 text-center bg-slate-50 rounded-4xl border-2 border-dashed border-slate-200">
+            <p className="text-slate-400 font-medium italic">Belum ada produk untuk kategori "{selectedCategory}"</p>
           </div>
         )}
       </div>
