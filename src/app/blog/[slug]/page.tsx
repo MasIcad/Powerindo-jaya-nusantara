@@ -21,11 +21,9 @@ export default async function BlogDetailPage(props: {
 
   if (!post) return notFound();
 
-  // 2. Logika Update View (Increment)
-  await supabase
-    .from('posts')
-    .update({ views: (post.views || 0) + 1 })
-    .eq('id', post.id);
+  // 2. Logika Update View (Increment) Menggunakan RPC
+  // Memanggil fungsi SQL increment_views yang dibuat di Supabase Dashboard
+  await supabase.rpc('increment_views', { post_id: post.id });
 
   const gallery = post.content?.gallery || [post.image_url];
   const bodyText = typeof post.content === 'object' ? post.content.body : post.content;
@@ -57,7 +55,8 @@ export default async function BlogDetailPage(props: {
               </div>
               <div className="flex items-center gap-2">
                 <Eye size={18} className="text-brand-primary" />
-                {post.views + 1} Pembaca
+                {/* Kita tambahkan +1 secara visual agar user langsung melihat perubahannya */}
+                {(post.views || 0) + 1} Pembaca
               </div>
               <div className="flex items-center gap-2">
                 <User size={18} className="text-brand-primary" />
