@@ -5,14 +5,24 @@ import { ArrowRight } from 'lucide-react'
 
 const slides = [
   {
-    image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1920',
     title: 'POWERING THE FUTURE',
-    desc: 'Solusi infrastruktur digital terdepan untuk kemajuan industri global.'
+    desc: 'Solusi infrastruktur listrik terpercaya untuk mendukung pertumbuhan industri nasional.'
   },
   {
-    image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1920',
     title: 'INNOVATION DRIVEN',
-    desc: 'Menghadirkan teknologi terbaru dengan standar keamanan internasional.'
+    desc: 'Menghadirkan teknologi terbaru dengan standar keamanan dan efisiensi internasional.'
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&q=80&w=1920', // Contoh: Foto trafo/listrik
+    title: 'ROBUST INFRASTRUCTURE',
+    desc: 'Membangun fondasi energi yang kuat dan tahan lama untuk kebutuhan masa depan.'
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=1920', // Contoh: Foto teknologi digital
+    title: 'DIGITAL TRANSFORMATION',
+    desc: 'Integrasi sistem pintar untuk operasional yang lebih cerdas dan terintegrasi.'
   }
 ]
 
@@ -22,7 +32,7 @@ export default function HeroSlider() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrent((prev) => (prev === slides.length - 1 ? 0 : prev + 1))
-    }, 5000)
+    }, 6000) // Durasi ditingkatkan ke 6 detik agar pengunjung sempat membaca
     return () => clearInterval(timer)
   }, [])
 
@@ -32,38 +42,41 @@ export default function HeroSlider() {
         <motion.div
           key={current}
           initial={{ opacity: 0, scale: 1.1 }}
-          animate={{ opacity: 0.6, scale: 1 }}
+          animate={{ opacity: 0.5, scale: 1 }} // Opacity 0.5 agar teks putih lebih menonjol
           exit={{ opacity: 0 }}
           transition={{ duration: 1.5 }}
           className="absolute inset-0"
         >
-          <img src={slides[current].image} className="h-full w-full object-cover" alt="Hero" />
+          <img 
+            src={slides[current].image} 
+            className="h-full w-full object-cover" 
+            alt={`Hero Slide ${current + 1}`} 
+          />
         </motion.div>
       </AnimatePresence>
 
       <div className="relative z-10 flex h-full items-center max-w-7xl mx-auto px-6">
-        <div className="max-w-3xl">
+        <div className="max-w-4xl">
           <AnimatePresence mode="wait">
             <motion.div
               key={current}
-              initial={{ y: 30, opacity: 0 }}
+              initial={{ y: 40, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -30, opacity: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              exit={{ y: -40, opacity: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <h1 className="text-6xl md:text-8xl font-black text-white leading-none mb-6 italic tracking-tighter">
+              <h1 className="text-6xl md:text-8xl font-black text-white leading-none mb-8 italic tracking-tighter">
                 {slides[current].title}
               </h1>
-              <p className="text-xl text-slate-300 mb-10 max-w-xl leading-relaxed">
+              <p className="text-xl md:text-2xl text-slate-200 mb-12 max-w-2xl leading-relaxed">
                 {slides[current].desc}
               </p>
               <div className="flex gap-4">
-                {/* PERBAIKAN DI SINI: Mengubah button menjadi tag <a> dengan href ke id about-section */}
                 <a 
                   href="#about-section"
-                  className="px-8 py-4 bg-brand-primary text-white font-bold rounded-full hover:scale-105 transition-transform flex items-center gap-2 cursor-pointer"
+                  className="px-10 py-5 bg-brand-primary text-white font-bold rounded-full hover:scale-105 transition-transform flex items-center gap-3 cursor-pointer shadow-2xl"
                 >
-                  LEARN MORE <ArrowRight size={20} />
+                  LEARN MORE <ArrowRight size={22} />
                 </a>
               </div>
             </motion.div>
@@ -71,15 +84,21 @@ export default function HeroSlider() {
         </div>
       </div>
       
-      {/* Slide Indicators */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-20">
+      {/* Slide Indicators - Otomatis menyesuaikan jumlah foto */}
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-4 z-20">
         {slides.map((_, i) => (
-          <div 
+          <button
             key={i}
-            className={`h-1 transition-all duration-500 ${current === i ? 'w-12 bg-brand-primary' : 'w-6 bg-white/30'}`}
+            onClick={() => setCurrent(i)}
+            className={`h-1.5 transition-all duration-500 rounded-full ${
+              current === i ? 'w-16 bg-brand-primary' : 'w-8 bg-white/20 hover:bg-white/40'
+            }`}
           />
         ))}
       </div>
+
+      {/* Overlay gradien gelap di bawah agar menyatu dengan section berikutnya */}
+      <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/80 via-transparent to-transparent z-0 pointer-events-none" />
     </div>
   )
 }
