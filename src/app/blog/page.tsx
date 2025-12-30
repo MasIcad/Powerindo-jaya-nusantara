@@ -1,7 +1,10 @@
 export const dynamic = 'force-dynamic';
+// Menambahkan revalidate 0 untuk memastikan data selalu fresh
+export const revalidate = 0; 
+
 import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
-import { MessageCircle, Phone } from 'lucide-react'; // Import ikon tambahan
+import { MessageCircle, Phone, Eye, Calendar } from 'lucide-react';
 
 export default async function BlogListPage() {
   // Fetch data dari Supabase
@@ -11,7 +14,7 @@ export default async function BlogListPage() {
     .order('created_at', { ascending: false });
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-20 relative"> {/* Tambahkan relative di sini */}
+    <div className="max-w-7xl mx-auto px-6 py-20 relative">
       <div className="mb-12">
         <h2 className="text-3xl font-bold text-brand-dark">Latest News & Insights</h2>
         <div className="h-1 w-20 bg-brand-primary mt-4"></div>
@@ -34,8 +37,15 @@ export default async function BlogListPage() {
                   {post.title}
                 </h3>
                 <div className="flex items-center justify-between text-xs text-slate-400 mt-4 pt-4 border-t">
-                  <span>{new Date(post.created_at).toLocaleDateString('id-ID')}</span>
-                  <span>{post.views} Views</span>
+                  <span className="flex items-center gap-1">
+                    <Calendar size={12} />
+                    {new Date(post.created_at).toLocaleDateString('id-ID')}
+                  </span>
+                  <span className="flex items-center gap-1 font-bold text-brand-primary">
+                    <Eye size={12} />
+                    {/* Memastikan views tampil 0 jika datanya null */}
+                    {post.views || 0} Views
+                  </span>
                 </div>
               </div>
             </div>
@@ -45,7 +55,6 @@ export default async function BlogListPage() {
 
       {/* --- FLOATING WHATSAPP BUTTON --- */}
       <div className="fixed bottom-8 right-8 z-100 flex flex-col items-end group">
-        {/* Menu Pilihan WhatsApp yang muncul saat di-hover */}
         <div className="flex flex-col gap-3 mb-4 opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300">
           <a 
             href="https://wa.me/6281252505111" 
@@ -71,7 +80,6 @@ export default async function BlogListPage() {
           </a>
         </div>
 
-        {/* Tombol Utama (Icon WhatsApp) */}
         <button className="bg-green-500 text-white p-5 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300">
           <MessageCircle size={32} fill="currentColor" />
         </button>
