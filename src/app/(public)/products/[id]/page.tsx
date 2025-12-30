@@ -38,13 +38,7 @@ export default async function ProductDetailPage(props: {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           {/* Kiri: Gambar Produk */}
           <Reveal>
-            <div className="rounded-4xl overflow-hidden border border-slate-100 shadow-2xl aspect-square bg-slate-50">
-              <img 
-                src={product.image_url} 
-                alt={product.name} 
-                className="w-full h-full object-cover"
-              />
-            </div>
+            <ProductView src={product.image_url} alt={product.name} />
           </Reveal>
 
           {/* Kanan: Detail Informasi */}
