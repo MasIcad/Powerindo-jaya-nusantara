@@ -58,9 +58,13 @@ export default function HeroSlider() {
                 {slides[current].desc}
               </p>
               <div className="flex gap-4">
-                <button className="px-8 py-4 bg-brand-primary text-white font-bold rounded-full hover:scale-105 transition-transform flex items-center gap-2">
+                {/* PERBAIKAN DI SINI: Mengubah button menjadi tag <a> dengan href ke id about-section */}
+                <a 
+                  href="#about-section"
+                  className="px-8 py-4 bg-brand-primary text-white font-bold rounded-full hover:scale-105 transition-transform flex items-center gap-2 cursor-pointer"
+                >
                   LEARN MORE <ArrowRight size={20} />
-                </button>
+                </a>
               </div>
             </motion.div>
           </AnimatePresence>
