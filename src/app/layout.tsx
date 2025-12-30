@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Powerino Jaya Nusantara",
     description: "Kami perusahaan mechanical Electrical, yang memproduksi, merakit, distributor dan jasa engineering peralatan listrik",
-    url: "https://visitec.vercel.app", // Ganti dengan domain asli jika sudah ada
+    url: "https://powerindojayanusantara.vercel.app/", // Ganti dengan domain asli jika sudah ada
     siteName: "Powerindo Jaya Nusantara",
     type: "website",
   },
