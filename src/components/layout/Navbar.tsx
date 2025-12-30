@@ -10,7 +10,7 @@ export default function Navbar() {
         {/* Bagian Brand: Logo + Teks */}
         <a href="/" className="flex items-center gap-3 group">
           <img 
-            src="/Logo.jpeg" 
+            src="/Logo2.png" 
             alt="Logo Powerindo Jaya Nusantara" 
             // mix-blend-multiply menghilangkan latar putih pada logo jpeg di atas bg putih
             className="h-10 w-auto object-contain mix-blend-multiply" 
