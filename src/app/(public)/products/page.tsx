@@ -67,7 +67,6 @@ export default async function ProductsPage(props: {
                     className="w-full pl-14 pr-6 py-4 bg-slate-50 border-2 border-slate-100 rounded-full outline-none focus:border-brand-primary focus:bg-white transition-all font-medium text-brand-dark"
                 />
                 <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand-primary transition-colors" size={20} />
-                {/* Hidden input agar filter kategori tidak hilang saat search (opsional) */}
                 {selectedCategory && <input type="hidden" name="category" value={selectedCategory} />}
             </form>
         </div>
@@ -102,27 +101,37 @@ export default async function ProductsPage(props: {
 
         {/* --- GRID PRODUK --- */}
         {products && products.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 items-stretch">
             {products.map((item: Product) => ( 
               <Reveal key={item.id}>
-                <div className="group border border-slate-100 rounded-4xl overflow-hidden shadow-sm hover:shadow-2xl transition-all bg-white">
-                  <div className="h-72 overflow-hidden relative">
+                {/* h-full flex flex-col memastikan semua kartu memiliki tinggi yang sama dalam satu baris grid */}
+                <div className="group border border-slate-100 rounded-4xl overflow-hidden shadow-sm hover:shadow-2xl transition-all bg-white h-full flex flex-col">
+                  <div className="h-72 overflow-hidden relative shrink-0">
                     <div className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur px-4 py-1.5 rounded-full flex items-center gap-2 shadow-sm border border-slate-100">
                         <Tag size={12} className="text-brand-primary" />
                         <span className="text-[10px] font-black text-brand-dark uppercase tracking-wider">{item.category || 'General'}</span>
                     </div>
                     <img src={item.image_url} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                   </div>
-                  <div className="p-8">
-                    <h3 className="text-2xl font-bold mb-2 text-brand-dark">{item.name}</h3>
-                    <p className="text-slate-500 mb-6 line-clamp-2 text-sm leading-relaxed">{item.description}</p>
-                    <div className="flex justify-between items-center pt-4 border-t border-slate-50">
+
+                  {/* flex-grow mendorong footer (harga & detail) ke posisi paling bawah yang seragam */}
+                  <div className="p-8 flex flex-col grow">
+                    {/* line-clamp-1 menjaga judul tidak merusak layout jika terlalu panjang */}
+                    <h3 className="text-2xl font-bold mb-3 text-brand-dark line-clamp-1">{item.name}</h3>
+                    
+                    {/* FITUR READ MORE: line-clamp-3 membatasi deskripsi hanya 3 baris */}
+                    <p className="text-slate-500 mb-6 line-clamp-3 text-sm leading-relaxed grow">
+                      {item.description}
+                    </p>
+
+                    {/* mt-auto memastikan row ini sejajar di semua kartu dalam satu baris */}
+                    <div className="flex justify-between items-center pt-6 border-t border-slate-50 mt-auto">
                       <span className="text-xl font-black text-brand-primary">
                         Rp {item.price?.toLocaleString('id-ID')}
                       </span>
                       <Link 
                         href={`/products/${item.id}`} 
-                        className="text-xs font-bold tracking-widest border-b-2 border-brand-dark hover:text-brand-primary hover:border-brand-primary transition-all"
+                        className="text-xs font-bold tracking-widest border-b-2 border-brand-dark hover:text-brand-primary hover:border-brand-primary transition-all pb-1"
                       >
                         DETAILS
                       </Link>

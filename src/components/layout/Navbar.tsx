@@ -1,44 +1,81 @@
 'use client'
+import { useState } from 'react'
+import { Menu, X } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 export default function Navbar() {
+  const [isOpen, setIsOpen] = useState(false)
+
+  const navLinks = [
+    { name: 'Home', href: '/' },
+    { name: 'Katalog', href: '/products' },
+    { name: 'Review', href: '/reviews' },
+    { name: 'Insights', href: '/blog' },
+    { name: 'Gallery', href: '/gallery' },
+    { name: 'Contact Us', href: '/contact' },
+  ]
+
   return (
     <nav 
-      // Variabel ini tetap diatur oleh AnnouncementBar.tsx
       style={{ top: 'var(--announcement-height, 0px)' }}
       className="sticky z-50 border-b bg-white/70 backdrop-blur-md transition-all duration-300"
     >
-      {/* - h-16 ditingkatkan ke h-20 (80px) agar lebih lega 
-          - px-6 tetap untuk margin samping
-      */}
       <div className="max-w-7xl mx-auto flex h-20 items-center justify-between px-6">
-        
-        {/* Bagian Brand: Logo + Teks */}
-        <a href="/" className="flex items-center gap-4 group">
+        {/* Logo Section */}
+        <a href="/" className="flex items-center gap-4 group shrink-0">
           <img 
             src="/Logo2.png" 
-            alt="Logo Powerindo Jaya Nusantara" 
-            // Ukuran logo ditingkatkan dari h-10 ke h-12
-            className="h-16 w-auto object-contain mix-blend-multiply" 
+            alt="Logo PJN" 
+            className="h-12 w-auto object-contain mix-blend-multiply" 
           />
-          {/* Ukuran teks ditingkatkan dari text-xl ke text-2xl */}
-          <span className="text-2xl font-bold text-brand-dark group-hover:text-brand-primary transition-colors tracking-tight">
+          <span className="text-xl md:text-2xl font-bold text-brand-dark group-hover:text-brand-primary transition-colors tracking-tight">
             Powerindo Jaya Nusantara
           </span>
         </a>
 
-        {/* Navigasi Link */}
-        {/* - gap-8 ditingkatkan ke gap-10 agar jarak antar menu lebih luas
-            - text-sm ditingkatkan ke text-base (ukuran standar yang lebih enak dibaca)
-        */}
+        {/* Desktop Navigation */}
         <div className="hidden md:flex gap-10 text-base font-semibold text-brand-dark">
-          <a href="/" className="hover:text-brand-primary transition-colors">Home</a>
-          <a href="/products" className="hover:text-brand-primary transition-colors">Catalog</a>
-          <a href="/blog" className="hover:text-brand-primary transition-colors">Insights</a>
-          <a href="/gallery" className="hover:text-brand-primary transition-colors">Gallery</a>
-          <a href="/reviews" className="hover:text-brand-primary transition-colors">Review</a>
-          <a href="/contact" className="hover:text-brand-primary transition-colors">Contact Us</a>
+          {navLinks.map((link) => (
+            <a key={link.name} href={link.href} className="hover:text-brand-primary transition-colors">
+              {link.name}
+            </a>
+          ))}
         </div>
+
+        {/* Mobile Toggle Button */}
+        <button 
+          className="md:hidden p-2 text-brand-dark hover:bg-slate-100 rounded-xl transition-all"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          {isOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
       </div>
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="absolute top-full left-0 w-full bg-white border-b shadow-2xl md:hidden overflow-hidden"
+          >
+            <div className="flex flex-col p-6 gap-6">
+              {navLinks.map((link) => (
+                <a 
+                  key={link.name} 
+                  href={link.href} 
+                  className="text-lg font-bold text-brand-dark hover:text-brand-primary flex justify-between items-center group"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {link.name}
+                  <div className="w-2 h-2 bg-brand-primary rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                </a>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
-  );
+  )
 }
