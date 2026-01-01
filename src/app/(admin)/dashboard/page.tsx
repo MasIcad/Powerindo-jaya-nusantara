@@ -231,10 +231,15 @@ export default function DashboardPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // --- FIX: HANDLE ADD POST DENGAN AUTHOR_ID ---
   const handleAddPost = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
+      // 1. Ambil ID Admin yang sedang login agar tidak Violates Policy
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Sesi berakhir, silakan login ulang.");
+
       let imageUrls: string[] = [...postForm.existingImages];
       if (postForm.files.length > 0) {
         for (const file of postForm.files) {
@@ -243,12 +248,15 @@ export default function DashboardPage() {
         }
       }
       if (imageUrls.length === 0) throw new Error("Artikel wajib memiliki minimal 1 foto.");
+      
       const postData = { 
         title: postForm.title, 
         content: { body: postForm.content, gallery: imageUrls },
         image_url: imageUrls[0] || '',
-        slug: postForm.title.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-')
+        slug: postForm.title.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-'),
+        author_id: user.id // <-- TAMBAHAN: Mengirim ID Penulis
       };
+
       if (editingPostId) {
         await supabase.from('posts').update(postData).eq('id', editingPostId);
         alert('Artikel Berhasil Diperbarui!');
