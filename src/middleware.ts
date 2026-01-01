@@ -35,7 +35,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // LOGIKA 2 (TAMBAHAN): Jika BELUM login & mencoba akses folder /admin, paksa ke /login
-  if (!user && request.nextUrl.pathname.startsWith('/admin')) {
+  if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
