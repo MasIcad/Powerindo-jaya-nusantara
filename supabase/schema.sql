@@ -1,4 +1,4 @@
--- 1. PEMBUATAN TABEL (DENGAN PENGECEKAN)
+-- 1. PEMBUATAN TABEL (MEMPERTAHANKAN SEMUA TABEL ANDA)
 CREATE TABLE IF NOT EXISTS posts (
   id UUID DEFAULT extensions.uuid_generate_v4() PRIMARY KEY,
   title TEXT NOT NULL,
@@ -42,12 +42,32 @@ CREATE TABLE IF NOT EXISTS subscribers (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- BARU: Tabel Pengumuman untuk fitur Broadcast Internal (Notifikasi)
 CREATE TABLE IF NOT EXISTS announcements (
   id UUID DEFAULT extensions.uuid_generate_v4() PRIMARY KEY,
   subject TEXT NOT NULL,
   message TEXT NOT NULL,
-  target_emails TEXT[] DEFAULT '{}', -- Menyimpan daftar email penerima broadcast
+  target_emails TEXT[] DEFAULT '{}',
+  expires_at TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS project_experience (
+  id UUID DEFAULT extensions.uuid_generate_v4() PRIMARY KEY,
+  project_no INTEGER,
+  project_name TEXT NOT NULL,
+  company TEXT,
+  field TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS reviews (
+  id UUID DEFAULT extensions.uuid_generate_v4() PRIMARY KEY,
+  name TEXT NOT NULL,
+  company TEXT,
+  rating INTEGER,
+  comment TEXT,
+  reply TEXT,
+  is_approved BOOLEAN DEFAULT false,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -57,95 +77,94 @@ ALTER TABLE products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE gallery ENABLE ROW LEVEL SECURITY;
 ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE subscribers ENABLE ROW LEVEL SECURITY;
-ALTER TABLE announcements ENABLE ROW LEVEL SECURITY; -- Aktifkan RLS untuk tabel baru
+ALTER TABLE announcements ENABLE ROW LEVEL SECURITY;
+ALTER TABLE project_experience ENABLE ROW LEVEL SECURITY;
+ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
 
--- 3. PEMBERSIHAN & PEMBUATAN POLICY
+-- 3. PERBAIKAN POLICY (MENGHAPUS LAMA & MEMBUAT BARU DENGAN WITH CHECK)
+-- Bagian ini memperbaiki error 42710 (already exists) dan error Violates Policy.
+
 DO $$ 
 BEGIN
-    -- Hapus policy lama agar tidak error "already exists"
+    -- Posts
     DROP POLICY IF EXISTS "Public can view posts" ON posts;
     DROP POLICY IF EXISTS "Admins can manage posts" ON posts;
+    -- Products
     DROP POLICY IF EXISTS "Public can view products" ON products;
     DROP POLICY IF EXISTS "Admins can manage products" ON products;
+    -- Gallery
     DROP POLICY IF EXISTS "Public can view gallery" ON gallery;
     DROP POLICY IF EXISTS "Admins can manage gallery" ON gallery;
-    DROP POLICY IF EXISTS "Public Access" ON storage.objects;
-    DROP POLICY IF EXISTS "Admins can upload images" ON storage.objects;
+    -- Projects
+    DROP POLICY IF EXISTS "Public can view projects" ON project_experience;
+    DROP POLICY IF EXISTS "Admins can manage projects" ON project_experience;
+    -- Reviews
+    DROP POLICY IF EXISTS "Public can view reviews" ON reviews;
+    DROP POLICY IF EXISTS "Admins can manage reviews" ON reviews;
+    -- Subscribers
     DROP POLICY IF EXISTS "Enable insert for public" ON subscribers;
     DROP POLICY IF EXISTS "Enable read access for authenticated users" ON subscribers;
     DROP POLICY IF EXISTS "Enable delete access for authenticated users" ON subscribers;
-
-    -- BARU: Hapus policy untuk announcements
+    DROP POLICY IF EXISTS "Admins can manage subscribers" ON subscribers;
+    -- Announcements
     DROP POLICY IF EXISTS "Public can view announcements" ON announcements;
     DROP POLICY IF EXISTS "Admins can manage announcements" ON announcements;
+    -- Storage
+    DROP POLICY IF EXISTS "Public Access" ON storage.objects;
+    DROP POLICY IF EXISTS "Admins can upload images" ON storage.objects;
 END $$;
 
--- Buat Policy Baru
+-- --- MEMBUAT POLICY BARU YANG BENAR ---
+
+-- Posts
 CREATE POLICY "Public can view posts" ON posts FOR SELECT USING (true);
-CREATE POLICY "Admins can manage posts" ON posts FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Admins can manage posts" ON posts FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
+-- Products
 CREATE POLICY "Public can view products" ON products FOR SELECT USING (true);
-CREATE POLICY "Admins can manage products" ON products FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Admins can manage products" ON products FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
+-- Gallery
 CREATE POLICY "Public can view gallery" ON gallery FOR SELECT USING (true);
-CREATE POLICY "Admins can manage gallery" ON gallery FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Admins can manage gallery" ON gallery FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
--- Policy untuk Subscribers
+-- Projects
+CREATE POLICY "Public can view projects" ON project_experience FOR SELECT USING (true);
+CREATE POLICY "Admins can manage projects" ON project_experience FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+-- Reviews
+CREATE POLICY "Public can view reviews" ON reviews FOR SELECT USING (true);
+CREATE POLICY "Admins can manage reviews" ON reviews FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+-- Subscribers
 CREATE POLICY "Enable insert for public" ON subscribers FOR INSERT WITH CHECK (true);
-CREATE POLICY "Enable read access for authenticated users" ON subscribers FOR SELECT TO authenticated USING (true);
-CREATE POLICY "Enable delete access for authenticated users" ON subscribers FOR DELETE TO authenticated USING (true);
+CREATE POLICY "Admins can manage subscribers" ON subscribers FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
--- BARU: Policy untuk Announcements (Broadcasting)
--- Publik/Pengunjung bisa melihat pengumuman
+-- Announcements
 CREATE POLICY "Public can view announcements" ON announcements FOR SELECT USING (true);
--- Hanya Admin yang bisa membuat/menghapus pengumuman
-CREATE POLICY "Admins can manage announcements" ON announcements FOR ALL TO authenticated USING (true);
+CREATE POLICY "Admins can manage announcements" ON announcements FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
--- Policy untuk Storage
+-- Storage
 CREATE POLICY "Public Access" ON storage.objects FOR SELECT USING (bucket_id = 'visitec-assets');
-CREATE POLICY "Admins can upload images" ON storage.objects FOR INSERT 
-WITH CHECK (bucket_id = 'visitec-assets' AND auth.role() = 'authenticated');
+CREATE POLICY "Admins can upload images" ON storage.objects FOR ALL TO authenticated WITH CHECK (bucket_id = 'visitec-assets');
 
--- 4. FIX UNTUK TABEL YANG SUDAH ADA
-ALTER TABLE products ADD COLUMN IF NOT EXISTS category TEXT;
-ALTER TABLE products ADD COLUMN IF NOT EXISTS images TEXT[] DEFAULT '{}';
-
-UPDATE posts SET views = 0 WHERE views IS NULL;
-
--- FUNGSI VIEW COUNTER
+-- 4. FUNGSI & LOGIKA TAMBAHAN (MEMPERTAHANKAN LOGIKA ANDA)
 CREATE OR REPLACE FUNCTION increment_views(post_id UUID)
 RETURNS void AS $$
 BEGIN
-  UPDATE posts
-  SET views = COALESCE(views, 0) + 1
-  WHERE id = post_id;
+  UPDATE posts SET views = COALESCE(views, 0) + 1 WHERE id = post_id;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Tambahkan kolom tanggal kedaluwarsa
-ALTER TABLE announcements ADD COLUMN IF NOT EXISTS expires_at TIMESTAMP WITH TIME ZONE;
-
--- Update Policy (Opsional, memastikan Admin tetap bisa kelola segalanya)
-DROP POLICY IF EXISTS "Admins can manage announcements" ON announcements;
-CREATE POLICY "Admins can manage announcements" ON announcements FOR ALL TO authenticated USING (true);
-
--- 1. Aktifkan ekstensi pg_cron (untuk menjalankan tugas terjadwal)
+-- Cron Job cleanup
 CREATE EXTENSION IF NOT EXISTS pg_cron;
-
--- 2. Buat fungsi khusus untuk menghapus pengumuman yang sudah lewat waktu
 CREATE OR REPLACE FUNCTION delete_expired_announcements()
 RETURNS void AS $$
 BEGIN
-  DELETE FROM announcements
-  WHERE expires_at < NOW();
+  DELETE FROM announcements WHERE expires_at < NOW();
 END;
 $$ LANGUAGE plpgsql;
 
--- 3. Jadwalkan tugas (Cron Job)
--- Script ini akan menjalankan fungsi di atas setiap jam (pada menit ke-0)
--- Format '0 * * * *' artinya: setiap jam sekali.
-SELECT cron.schedule(
-  'cleanup-expired-announcements', -- Nama tugas
-  '0 * * * *',                     -- Jadwal (Cron format)
-  'SELECT delete_expired_announcements()' -- Perintah yang dijalankan
-);
+-- Unschedule dulu agar tidak error duplicate job
+SELECT cron.unschedule('cleanup-expired-announcements');
+SELECT cron.schedule('cleanup-expired-announcements', '0 * * * *', 'SELECT delete_expired_announcements()');

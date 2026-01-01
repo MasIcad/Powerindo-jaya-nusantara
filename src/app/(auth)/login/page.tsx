@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { loginAction } from './action'
 import { Lock, Mail, Loader2, Zap } from 'lucide-react'
 import Image from 'next/image'
+import { logoutAction } from './action'
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false)
