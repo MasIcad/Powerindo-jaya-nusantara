@@ -34,7 +34,7 @@ export async function middleware(request: NextRequest) {
 
   // LOGIKA 1: Jika sudah login, paksa pindah ke dashboard saat buka /login
   if (user && path === '/login') {
-    return NextResponse.redirect(new URL('/admin/dashboard', request.url))
+    return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
   // LOGIKA 2: Proteksi Folder Admin & Dashboard (Jika BELUM login)
