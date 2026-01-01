@@ -34,7 +34,7 @@ export async function middleware(request: NextRequest) {
 
   // 1. Jika SUDAH login & buka halaman /login, lempar ke dashboard
   if (user && path === '/login') {
-    return NextResponse.redirect(new URL('/admin/dashboard', request.url))
+    return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
   // 2. Jika BELUM login & mencoba akses folder /admin atau /dashboard, paksa ke /login
