@@ -53,13 +53,18 @@ export async function middleware(request: NextRequest) {
   )
 
 
-
+  const path = request.nextUrl.pathname;
   const { data: { user } } = await supabase.auth.getUser()
 
+  // 1. Jika BELUM login & mencoba akses folder admin/dashboard, paksa ke /login
 
+  if (!user && (path.startsWith('/admin') || path.startsWith('/dashboard'))) {
+
+    return NextResponse.redirect(new URL('/login', request.url))
+
+  }
 
   // Jika sudah login, paksa pindah ke dashboard
-
   if (user && request.nextUrl.pathname === '/login') {
 
     return NextResponse.redirect(new URL('/dashboard', request.url))
