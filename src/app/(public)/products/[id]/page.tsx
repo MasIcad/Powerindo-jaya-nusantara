@@ -75,7 +75,7 @@ export default async function ProductDetailPage(props: {
                 </div>
                 <div className="flex items-center gap-3 text-slate-600">
                   <Clock className="text-brand-primary" size={20} /> 
-                  <span className="text-[10px] font-bold uppercase tracking-wider">SUPPORT 24/7</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider">100% ORIGINAL</span>
                 </div>
               </div>
 
