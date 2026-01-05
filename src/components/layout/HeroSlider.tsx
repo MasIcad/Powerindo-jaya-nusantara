@@ -12,7 +12,7 @@ const slides = [
   },
   {
     // Visual: Detail Komponen Listrik/Trafo
-    image: 'my-corp-blog/public/BgSupplier.jpeg',
+    image: '/BgSupplier.jpeg',
     title: 'PREMIUM SUPPLIER',
     desc: 'Penyedia komponen elektrikal dan infrastruktur energi berkualitas tinggi untuk menjamin keandalan bisnis Anda.'
   },
@@ -24,7 +24,7 @@ const slides = [
   },
   {
     // Visual: Fasilitas Industri Modern
-    image: 'my-corp-blog/public/Background_Fuse.jpg',
+    image: '/BgFuse.jpeg',
     title: 'SMART INTEGRATED SOLUTIONS',
     desc: 'Solusi kelistrikan terpadu untuk mendukung efisiensi, keandalan, dan kebutuhan bisnis.'
   }
