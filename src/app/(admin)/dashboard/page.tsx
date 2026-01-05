@@ -39,23 +39,20 @@ export default function DashboardPage() {
   const [postForm, setPostForm] = useState({ title: '', content: '', files: [] as File[], existingImages: [] as string[] });
   const [gallForm, setGallForm] = useState({ title: '', file: null as File | null });
 
-  // --- LOGIKA AUTH & FETCH (FIXED) ---
+  // CSS tambahan untuk scrollbar tipis
+  const scrollbarStyle = "scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent";
+
   useEffect(() => { 
     const initDashboard = async () => {
-      // Menggunakan getSession() untuk mendapatkan data auth dari cookie
       const { data: { session } } = await supabase.auth.getSession();
-      
       if (!session) {
         router.push('/login');
         return;
       }
-      
       setCurrentUser(session.user);
-      fetchData(); // Panggil data setelah user terkonfirmasi
+      fetchData();
     };
-
     initDashboard();
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
         setCurrentUser(session.user);
@@ -63,14 +60,12 @@ export default function DashboardPage() {
         router.push('/login');
       }
     });
-
     return () => subscription.unsubscribe();
   }, [router]);
 
   async function fetchData() {
     setLoading(true); 
     try {
-      // Mengambil semua data secara paralel agar preview muncul bersamaan
       const [pData, prodD, gallD, subD, revD, projD] = await Promise.all([
         supabase.from('posts').select('*').order('created_at', { ascending: false }),
         supabase.from('products').select('*').order('created_at', { ascending: false }),
@@ -79,7 +74,6 @@ export default function DashboardPage() {
         supabase.from('reviews').select('*').order('created_at', { ascending: false }),
         supabase.from('project_experience').select('*').order('project_no', { ascending: false })
       ]);
-      
       if (pData.data) setPosts(pData.data);
       if (prodD.data) setProducts(prodD.data);
       if (gallD.data) setGallery(gallD.data);
@@ -100,14 +94,12 @@ export default function DashboardPage() {
     return supabase.storage.from('visitec-assets').getPublicUrl(filePath).data.publicUrl;
   };
 
-  // --- HANDLERS ---
   const handleAddPost = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Sesi berakhir, silakan login ulang.");
-
       let imageUrls: string[] = [...postForm.existingImages];
       if (postForm.files.length > 0) {
         for (const file of postForm.files) {
@@ -115,7 +107,6 @@ export default function DashboardPage() {
           imageUrls.push(url);
         }
       }
-      
       const postData = { 
         title: postForm.title, 
         content: { body: postForm.content, gallery: imageUrls },
@@ -123,7 +114,6 @@ export default function DashboardPage() {
         slug: postForm.title.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-'),
         author_id: user.id 
       };
-
       if (editingPostId) {
         await supabase.from('posts').update(postData).eq('id', editingPostId);
       } else {
@@ -143,7 +133,6 @@ export default function DashboardPage() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Sesi tidak ditemukan.");
-
       let imageUrls: string[] = [...prodForm.existingImages];
       if (prodForm.files.length > 0) {
         for (const file of prodForm.files) {
@@ -155,7 +144,6 @@ export default function DashboardPage() {
         name: prodForm.name, description: prodForm.desc, price: parseFloat(prodForm.price), 
         category: prodForm.category, image_url: imageUrls[0], images: imageUrls 
       };
-
       if (editingProdId) {
         await supabase.from('products').update(productData).eq('id', editingProdId);
       } else {
@@ -252,6 +240,7 @@ export default function DashboardPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-24 bg-slate-50 min-h-screen">
+      {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
         <div className="flex justify-between items-start w-full md:w-auto gap-6">
           <div>
@@ -289,7 +278,8 @@ export default function DashboardPage() {
       {activeTab === 'insight' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="lg:col-span-2">
-            <div className="bg-white p-10 rounded-4xl shadow-xl border border-slate-100">
+            {/* Scrollable Left Panel */}
+            <div className={`bg-white p-10 rounded-4xl shadow-xl border border-slate-100 sticky top-32 max-h-[calc(100vh-180px)] overflow-y-auto ${scrollbarStyle}`}>
               <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
                 <FileText className="text-brand-primary" /> {editingPostId ? 'Edit Artikel' : 'Tulis Artikel Baru'}
               </h2>
@@ -350,7 +340,8 @@ export default function DashboardPage() {
       {activeTab === 'products' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="lg:col-span-1">
-            <div className="bg-white p-8 rounded-4xl shadow-xl border border-slate-100 sticky top-32">
+            {/* Scrollable Left Panel */}
+            <div className={`bg-white p-8 rounded-4xl shadow-xl border border-slate-100 sticky top-32 max-h-[calc(100vh-180px)] overflow-y-auto ${scrollbarStyle}`}>
               <h2 className="text-2xl font-bold mb-8">{editingProdId ? 'Edit Produk' : 'Tambah Produk'}</h2>
               <form onSubmit={handleAddProduct} className="space-y-5">
                 <input type="text" placeholder="Nama Produk" required className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold" value={prodForm.name} onChange={e => setProdForm({...prodForm, name: e.target.value})} />
@@ -416,7 +407,8 @@ export default function DashboardPage() {
       {activeTab === 'gallery' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="lg:col-span-1">
-            <div className="bg-white p-8 rounded-4xl shadow-xl border border-slate-100">
+            {/* Scrollable Left Panel */}
+            <div className={`bg-white p-8 rounded-4xl shadow-xl border border-slate-100 sticky top-32 max-h-[calc(100vh-180px)] overflow-y-auto ${scrollbarStyle}`}>
               <h2 className="text-2xl font-bold mb-8">Add to Gallery</h2>
               <form onSubmit={handleAddGallery} className="space-y-6">
                 <input type="text" placeholder="Judul Proyek" required className="w-full p-4 bg-slate-50 rounded-2xl outline-none" value={gallForm.title} onChange={e => setGallForm({...gallForm, title: e.target.value})} />
@@ -451,42 +443,45 @@ export default function DashboardPage() {
 
       {activeTab === 'projects' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <div className="lg:col-span-1 space-y-8">
-            <div className="bg-white p-8 rounded-4xl shadow-xl border border-slate-100">
-              <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
-                <Hash className="text-brand-primary" /> {editingProjectId ? 'Edit Project' : 'Tambah Project'}
-              </h2>
-              <form onSubmit={handleAddProject} className="space-y-4">
-                <input type="number" placeholder="No Urut (Contoh: 143)" required className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold" value={projectForm.no} onChange={e => setProjectForm({...projectForm, no: e.target.value})} />
-                <input type="text" placeholder="Nama Paket Pekerjaan" required className="w-full p-4 bg-slate-50 rounded-2xl outline-none" value={projectForm.name} onChange={e => setProjectForm({...projectForm, name: e.target.value})} />
-                <input type="text" placeholder="Nama Client/Perusahaan" required className="w-full p-4 bg-slate-50 rounded-2xl outline-none" value={projectForm.company} onChange={e => setProjectForm({...projectForm, company: e.target.value})} />
-                <select className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold text-slate-500" value={projectForm.field} onChange={e => setProjectForm({...projectForm, field: e.target.value})}>
-                  <option value="Elektrikal">Elektrikal</option>
-                  <option value="Hydrant">Hydrant</option>
-                  <option value="HVAC">HVAC</option>
-                  <option value="Mekanikal">Mekanikal</option>
-                </select>
-                <button disabled={loading} className="w-full py-4 bg-brand-primary text-white font-bold rounded-2xl shadow-lg flex justify-center items-center gap-2">
-                  {loading ? <Loader2 className="animate-spin" /> : editingProjectId ? <Save size={18}/> : <Plus />} {editingProjectId ? 'Update Project' : 'Simpan Project'}
-                </button>
-                {editingProjectId && (
-                   <button type="button" onClick={() => { setEditingProjectId(null); setProjectForm({no:'', name:'', company:'', field:'Elektrikal'})}} className="w-full py-4 bg-slate-100 text-slate-500 font-bold rounded-2xl"><RotateCcw className="inline mr-2" size={16}/>Batal Edit</button>
-                )}
-              </form>
-            </div>
+          <div className="lg:col-span-1">
+            {/* Scrollable Left Panel */}
+            <div className={`space-y-8 sticky top-32 max-h-[calc(100vh-180px)] overflow-y-auto pr-2 ${scrollbarStyle}`}>
+              <div className="bg-white p-8 rounded-4xl shadow-xl border border-slate-100">
+                <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
+                  <Hash className="text-brand-primary" /> {editingProjectId ? 'Edit Project' : 'Tambah Project'}
+                </h2>
+                <form onSubmit={handleAddProject} className="space-y-4">
+                  <input type="number" placeholder="No Urut (Contoh: 143)" required className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold" value={projectForm.no} onChange={e => setProjectForm({...projectForm, no: e.target.value})} />
+                  <input type="text" placeholder="Nama Paket Pekerjaan" required className="w-full p-4 bg-slate-50 rounded-2xl outline-none" value={projectForm.name} onChange={e => setProjectForm({...projectForm, name: e.target.value})} />
+                  <input type="text" placeholder="Nama Client/Perusahaan" required className="w-full p-4 bg-slate-50 rounded-2xl outline-none" value={projectForm.company} onChange={e => setProjectForm({...projectForm, company: e.target.value})} />
+                  <select className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold text-slate-500" value={projectForm.field} onChange={e => setProjectForm({...projectForm, field: e.target.value})}>
+                    <option value="Elektrikal">Elektrikal</option>
+                    <option value="Hydrant">Hydrant</option>
+                    <option value="HVAC">HVAC</option>
+                    <option value="Mekanikal">Mekanikal</option>
+                  </select>
+                  <button disabled={loading} className="w-full py-4 bg-brand-primary text-white font-bold rounded-2xl shadow-lg flex justify-center items-center gap-2">
+                    {loading ? <Loader2 className="animate-spin" /> : editingProjectId ? <Save size={18}/> : <Plus />} {editingProjectId ? 'Update Project' : 'Simpan Project'}
+                  </button>
+                  {editingProjectId && (
+                     <button type="button" onClick={() => { setEditingProjectId(null); setProjectForm({no:'', name:'', company:'', field:'Elektrikal'})}} className="w-full py-4 bg-slate-100 text-slate-500 font-bold rounded-2xl"><RotateCcw className="inline mr-2" size={16}/>Batal Edit</button>
+                  )}
+                </form>
+              </div>
 
-            <div className="bg-brand-dark p-8 rounded-4xl shadow-xl text-white">
-               <h3 className="text-xl font-bold mb-4 flex items-center gap-3 italic"><FileUp className="text-brand-primary" /> Bulk Import CSV</h3>
-               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-4">Format: No;Nama;Client;Bidang (Gunakan Titik Koma)</p>
-               <textarea 
-                 placeholder="143;Pengadaan Kabel;PT. MEGA BINTANG;Elektrikal" 
-                 className="w-full h-32 p-4 bg-white/5 border border-white/10 rounded-2xl outline-none text-xs focus:border-brand-primary transition-all mb-4"
-                 value={csvText}
-                 onChange={e => setCsvText(e.target.value)}
-               />
-               <button onClick={handleBulkImport} disabled={loading} className="w-full py-3 bg-white text-brand-dark font-black rounded-xl text-[10px] uppercase tracking-[0.2em] hover:bg-brand-primary hover:text-white transition-all">
-                 {loading ? 'Processing...' : 'Proses Bulk Import'}
-               </button>
+              <div className="bg-brand-dark p-8 rounded-4xl shadow-xl text-white">
+                 <h3 className="text-xl font-bold mb-4 flex items-center gap-3 italic"><FileUp className="text-brand-primary" /> Bulk Import CSV</h3>
+                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-4">Format: No;Nama;Client;Bidang</p>
+                 <textarea 
+                   placeholder="143;Pengadaan Kabel;PT. MEGA BINTANG;Elektrikal" 
+                   className="w-full h-32 p-4 bg-white/5 border border-white/10 rounded-2xl outline-none text-xs focus:border-brand-primary transition-all mb-4"
+                   value={csvText}
+                   onChange={e => setCsvText(e.target.value)}
+                 />
+                 <button onClick={handleBulkImport} disabled={loading} className="w-full py-3 bg-white text-brand-dark font-black rounded-xl text-[10px] uppercase tracking-[0.2em] hover:bg-brand-primary hover:text-white transition-all">
+                   {loading ? 'Processing...' : 'Proses Bulk Import'}
+                 </button>
+              </div>
             </div>
           </div>
 
@@ -496,7 +491,8 @@ export default function DashboardPage() {
                   <h3 className="font-bold text-brand-dark uppercase text-xs tracking-widest">Master Project List</h3>
                   <span className="text-[10px] font-black text-brand-primary bg-blue-50 px-3 py-1 rounded-full border border-blue-100">{projects.length} Total Data</span>
                </div>
-               <div className="max-h-800px overflow-y-auto">
+               {/* Membatasi tinggi tabel agar tidak memanjang kebawah saat scroll */}
+               <div className={`max-h-150 overflow-y-auto ${scrollbarStyle}`}>
                   <table className="w-full text-left">
                     <thead className="bg-slate-100/50 sticky top-0 z-10 text-[9px] font-black uppercase tracking-[0.3em] text-slate-400">
                       <tr>
@@ -523,6 +519,7 @@ export default function DashboardPage() {
                       ))}
                     </tbody>
                   </table>
+                  {projects.length === 0 && <div className="py-20 text-center text-slate-400 italic">Belum ada data project.</div>}
                </div>
             </div>
           </div>
