@@ -41,9 +41,8 @@ export default async function ProductsPage(props: {
     query = query.eq('category', selectedCategory);
   }
 
-  // FITUR BARU: Jika ada keyword pencarian, tambahkan filter .ilike (case-insensitive search)
+  // Jika ada keyword pencarian, tambahkan filter .ilike
   if (searchQuery && searchQuery.trim() !== "") {
-    // Mencari di kolom 'name' yang mengandung kata kunci
     query = query.ilike('name', `%${searchQuery}%`);
   }
 
@@ -51,7 +50,7 @@ export default async function ProductsPage(props: {
 
   return (
     <section className="py-32 px-6 bg-white min-h-screen relative">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-400 mx-auto"> {/* Lebar ditingkatkan agar 5 kolom tidak terlalu sempit */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
             <div>
                 <h1 className="text-5xl font-black text-brand-dark italic mb-4 uppercase tracking-tighter">OUR PRODUCTS</h1>
@@ -73,23 +72,23 @@ export default async function ProductsPage(props: {
         </div>
 
         {/* --- FILTER KATEGORI --- */}
-        <div className="flex flex-wrap gap-3 mb-16">
+        <div className="flex flex-wrap gap-2 mb-16">
           <Link 
             href="/products"
-            className={`px-8 py-3 rounded-full border-2 text-[10px] font-black tracking-widest transition-all duration-300 shadow-sm ${
+            className={`px-6 py-2.5 rounded-full border-2 text-[9px] font-black tracking-widest transition-all duration-300 shadow-sm ${
               !selectedCategory 
               ? 'bg-brand-primary text-white border-brand-primary shadow-blue-200 shadow-lg' 
               : 'bg-white text-slate-400 border-slate-100 hover:border-brand-primary hover:text-brand-primary'
             }`}
           >
-            SEMUA PRODUK
+            SEMUA
           </Link>
           
           {categories.map((cat) => (
             <Link 
               key={cat}
               href={`/products?category=${encodeURIComponent(cat)}${searchQuery ? `&q=${searchQuery}` : ''}`}
-              className={`px-8 py-3 rounded-full border-2 text-[10px] font-black tracking-widest transition-all duration-300 shadow-sm ${
+              className={`px-6 py-2.5 rounded-full border-2 text-[9px] font-black tracking-widest transition-all duration-300 shadow-sm ${
                 selectedCategory === cat 
                 ? 'bg-brand-primary text-white border-brand-primary shadow-blue-200 shadow-lg' 
                 : 'bg-white text-slate-400 border-slate-100 hover:border-brand-primary hover:text-brand-primary'
@@ -100,41 +99,38 @@ export default async function ProductsPage(props: {
           ))}
         </div>
 
-        {/* --- GRID PRODUK --- */}
+        {/* --- GRID PRODUK (5 KOLOM PADA LAYAR BESAR) --- */}
         {products && products.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 items-stretch">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 items-stretch">
             {products.map((item: Product) => ( 
               <Reveal key={item.id}>
-                {/* h-full flex flex-col memastikan semua kartu memiliki tinggi yang sama dalam satu baris grid */}
-                <div className="group border border-slate-100 rounded-4xl overflow-hidden shadow-sm hover:shadow-2xl transition-all bg-white h-full flex flex-col">
-                  <div className="h-72 overflow-hidden relative shrink-0">
-                    <div className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur px-4 py-1.5 rounded-full flex items-center gap-2 shadow-sm border border-slate-100">
-                        <Tag size={12} className="text-brand-primary" />
-                        <span className="text-[10px] font-black text-brand-dark uppercase tracking-wider">{item.category || 'General'}</span>
+                <div className="group border border-slate-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all bg-white h-full flex flex-col">
+                  {/* Tinggi gambar disesuaikan (h-52) agar proporsional di 5 kolom */}
+                  <div className="h-52 overflow-hidden relative shrink-0">
+                    <div className="absolute top-3 left-3 z-10 bg-white/95 backdrop-blur px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm border border-slate-100">
+                        <Tag size={10} className="text-brand-primary" />
+                        <span className="text-[9px] font-black text-brand-dark uppercase tracking-wider">{item.category || 'General'}</span>
                     </div>
                     <img src={item.image_url} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                   </div>
 
-                  {/* flex-grow mendorong footer (harga & detail) ke posisi paling bawah yang seragam */}
-                  <div className="p-8 flex flex-col grow">
-                    {/* line-clamp-1 menjaga judul tidak merusak layout jika terlalu panjang */}
-                    <h3 className="text-2xl font-bold mb-3 text-brand-dark line-clamp-1">{item.name}</h3>
+                  <div className="p-5 flex flex-col grow">
+                    {/* Ukuran teks judul dikurangi (text-lg) agar tidak bertabrakan */}
+                    <h3 className="text-lg font-bold mb-2 text-brand-dark line-clamp-2 leading-tight h-12">{item.name}</h3>
                     
-                    {/* FITUR READ MORE: line-clamp-3 membatasi deskripsi hanya 3 baris */}
-                    <p className="text-slate-500 mb-6 line-clamp-3 text-sm leading-relaxed grow">
+                    <p className="text-slate-500 mb-4 line-clamp-2 text-xs leading-relaxed grow">
                       {item.description}
                     </p>
 
-                    {/* mt-auto memastikan row ini sejajar di semua kartu dalam satu baris */}
-                    <div className="flex justify-between items-center pt-6 border-t border-slate-50 mt-auto">
-                      <span className="text-xl font-black text-brand-primary">
+                    <div className="flex flex-col gap-3 pt-4 border-t border-slate-50 mt-auto">
+                      <span className="text-lg font-black text-brand-primary">
                         Rp {item.price?.toLocaleString('id-ID')}
                       </span>
                       <Link 
                         href={`/products/${item.id}`} 
-                        className="text-xs font-bold tracking-widest border-b-2 border-brand-dark hover:text-brand-primary hover:border-brand-primary transition-all pb-1"
+                        className="text-[10px] font-bold tracking-widest text-center py-2 bg-slate-50 rounded-xl group-hover:bg-brand-primary group-hover:text-white transition-all uppercase"
                       >
-                        DETAILS
+                        Details
                       </Link>
                     </div>
                   </div>
