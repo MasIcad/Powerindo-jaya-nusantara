@@ -181,7 +181,7 @@ export default function DashboardPage() {
       setCsvText('');
       fetchData();
       alert('Bulk import berhasil!');
-    } catch (err: any) { alert(err.message); }
+    } catch (err: any) { alert("Format salah: " + err.message); }
     finally { setLoading(false); }
   };
 
@@ -190,12 +190,11 @@ export default function DashboardPage() {
     setIsBroadcasting(true);
     try {
       const expiryDate = broadcastForm.expires_at ? new Date(broadcastForm.expires_at).toISOString() : null;
-      // Broadcast sekarang dikirim secara publik (target_emails dihapus dari logika UI)
       await supabase.from('announcements').insert([{ 
         subject: broadcastForm.subject, 
         message: broadcastForm.message, 
         expires_at: expiryDate,
-        is_public: true // Flag tambahan jika kolom ini ada di DB Anda
+        is_public: true 
       }]);
       alert("Broadcast/Pengumuman berhasil dipublikasikan ke semua user!");
       setBroadcastForm({ subject: '', message: '', expires_at: '' });
@@ -511,7 +510,7 @@ export default function DashboardPage() {
       )}
 
       {activeTab === 'broadcast' && (
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="bg-brand-dark p-12 rounded-4xl shadow-2xl text-white">
             <div className="flex items-center gap-6 mb-10">
               <div className="p-4 bg-brand-primary rounded-3xl shadow-lg shadow-blue-500/20">
@@ -563,18 +562,6 @@ export default function DashboardPage() {
                 {isBroadcasting ? 'Mempublikasikan...' : 'Publikasikan Pengumuman Sekarang'}
               </button>
             </form>
-          </div>
-
-          <div className="p-12 bg-white rounded-4xl border border-slate-100 text-center">
-             <div className="max-w-md mx-auto">
-                <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                   <Megaphone className="text-slate-300" size={32} />
-                </div>
-                <h3 className="text-xl font-bold text-brand-dark mb-2">Fitur Subscription Dinonaktifkan</h3>
-                <p className="text-slate-500 text-sm leading-relaxed">
-                  Sesuai permintaan terbaru, fitur pengumpulan email pelanggan telah dihapus. Broadcast sekarang bersifat publik dan akan ditampilkan langsung melalui komponen Announcement di website utama.
-                </p>
-             </div>
           </div>
         </div>
       )}
