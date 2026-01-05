@@ -8,7 +8,7 @@ Website profil perusahaan resmi **Powerindo Jaya Nusantara** yang dibangun mengg
 * **Database & Backend**: Supabase (PostgreSQL, Auth, & Storage).
 * **Styling**: Tailwind CSS untuk desain responsif.
 * **Automation**: n8n untuk alur kerja otomatisasi data.
-* **Deployment**: Vercel (Hobby Plan).
+* **Deployment**: Vercel (Hobby Plan). 
 
 ---
 
