@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: '/login/', // Melarang Google mengindeks halaman dashboard admin Anda
     },
-    sitemap: 'https://powerindojayanusantara.vercel.app/sitemap.xml',
+    sitemap: 'https://powerindojayanusantara.com/sitemap.xml',
   }
 }

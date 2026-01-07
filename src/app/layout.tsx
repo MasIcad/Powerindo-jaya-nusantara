@@ -16,19 +16,19 @@ const jakarta = Plus_Jakarta_Sans({
 // Konfigurasi SEO & Metadata Powerindo Jaya Nusantara
 export const metadata: Metadata = {
   title: "Powerindo Jaya Nusantara - Kontraktor & Distributor Alat Listrik",
-  description: "PT. Powerindo Jaya Nusantara: Spesialis Mechanical Electrical Contractor, perakitan trafo, distributor alat listrik, dan jasa engineering terpercaya di Indonesia.",
-  keywords: ["Powerindojayanusantara", "Teknologi", "Mechanical Electrical Contractor", "Supplier", "Distributor", "Indonesia", "Supplier Alat Listrik", "Jasa Engineering Listrik","PJN", "Jual Cubicle Schneider", "Distributor Cubicle Schneider SM6", "Supplier Schneider Terlengkap Jawa", "Distributor Resmi Schneider Indonesia", "Distributor Schneider Surabaya Murah", "Jasa Setting dan Pasang Cubicle Schneider Jawa", "Jual Trafo Murah", "Distributor Transformator Murah", "Harga Trafo Trafindo Ready Stock", "Supplier Trafo Original Garansi Resmi", "Jual Trafo Listrik Tegangan Menengah Jawa", "Jual Panel ATS LVMDP Murah", "Pembuatan Panel ATS LVMDP", "Harga Panel LVMDP", "Jual Panel AMF - ATS", "Supplier Panel ATS LVMDP", "Jasa Fabrikasi Panel ATS LVMDP", "Jual Main Distribution Panel MDP/SDP", "Distributor Panel Kapasitor Bank Jawa", "Supplier Panel Distribusi Listrik", "Jasa Maintenance Panel MDP SDP Jawa", "Jual Genset Murah Jawa Ready Stock", "Distributor Genset Diesel", "Jual Panel Synchron Generator Sets Murah", "Jasa Instalasi dan Service Genset Jawa", "Jual Kabel TM (Tegangan Menengah) Murah Jawa", "Distributor Kabel TR (Tegangan Rendah) Jawa", "Jasa Pasang Penangkal Petir Eksternal Jawa", "Instalasi Arrester MV dan LV Schneider Murah", "Jual Gas Detector LPG Storage Jawa", "Supplier Kabel Listrik dan Aksesoris"],
-  authors: [{ name: "Powerindo Jaya Nusantara Team" }],
+  description: "Spesialis Mechanical Electrical Contractor, perakitan trafo, dan distributor resmi Schneider di Indonesia.",
+  // Metadata keywords bisa tetap ada, tapi jangan terlalu berharap banyak di sini
+  keywords: ["Mechanical Electrical", "Schneider Indonesia", "Trafo Trafindo"], 
   openGraph: {
-    title: "Powerindo Jaya Nusantara | Mechanical Electrical Contractor",
-    description: "Solusi infrastruktur listrik dan mekanikal terpadu. Produk lengkap dengan standar kualitas internasional.",
+    title: "Powerindo Jaya Nusantara | Kontraktor Listrik Terpercaya",
+    description: "Solusi infrastruktur listrik dan mekanikal terpadu standar internasional.",
     url: "https://powerindojayanusantara.com/", 
     siteName: "Powerindo Jaya Nusantara",
     images: [
       {
-        url: "/Logo2.png", 
-        width: 800,
-        height: 600,
+        url: "https://powerindojayanusantara.com/Logo2.png", // Gunakan URL absolut
+        width: 1200, // Ukuran standar OG
+        height: 630,
         alt: "Logo Powerindo Jaya Nusantara",
       },
     ],
